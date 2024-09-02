@@ -1,0 +1,1 @@
+pip install -r src/lambda-layers/dependencies/requirements.txt -t src/lambda-layers/dependencies/python

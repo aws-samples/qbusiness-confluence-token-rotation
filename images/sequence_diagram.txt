@@ -1,0 +1,26 @@
+title Amazon Q Business Confluence Token Rotation
+
+participant Amazon Q Business
+participant AWS Secrets Manager
+participant Confluence
+participant AWS Events Scheduler
+participant AWS Lambda
+participant AWS EventBridge
+participant SNS
+participant User
+
+Amazon Q Business->AWS Secrets Manager:Read QBusiness Confluence secret
+AWS Secrets Manager-->Amazon Q Business:secret with access/refresh tokens
+Amazon Q Business->Confluence:Sync Content
+Amazon Q Business<--Confluence:Content
+AWS Events Scheduler-->AWS Events Scheduler:Schedule
+AWS Events Scheduler->AWS Lambda:Invoke (Rotate access/refresh tokens)
+AWS Lambda->AWS Secrets Manager:Read backup secret (with access/refresh tokens)
+AWS Lambda->Confluence: Get new tokens using refresh token
+AWS Lambda<--Confluence: New access/refresh token pair
+AWS Lambda->AWS Secrets Manager: Update backup secret with new access/refresh token pair
+AWS Lambda->AWS Secrets Manager: Update Amazon Q Business Confluence secret with new access token and a dummy (placeholder) refresh token
+AWS Lambda->AWS EventBridge: Rotation Success/Failure event
+AWS EventBridge->SNS: Rotation Success/Failure event
+SNS->User: Notification Email
+Amazon Q Business-->Amazon Q Business:Repeat Sync
