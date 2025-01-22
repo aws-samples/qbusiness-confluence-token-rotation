@@ -147,7 +147,7 @@ def set_secret(service_client, arn, clientRequestToken):
         secret_json = json.loads(secret_response["SecretString"])
 
         secret_json['confluenceAccessToken'] = backup_secret_json['confluenceAccessToken']
-        secret_json['confluenceRefreshToken'] = 'confluenceRefreshToken'
+        secret_json['confluenceRefreshToken'] = backup_secret_json['confluenceRefreshToken']
 
         client_request_token = str(uuid.uuid4())
         service_client.put_secret_value(
